@@ -1,0 +1,14 @@
+com.example.mcricket.app-jetified-annotation-experimental-1.1.0-0 /Users/michl/.gradle/caches/transforms-3/02315cc9f75263553d2042718fc375ee/transformed/jetified-annotation-experimental-1.1.0/res
+com.example.mcricket.app-jetified-window-1.0.0-beta04-1 /Users/michl/.gradle/caches/transforms-3/076eb9235982ee06112d76594ea8585f/transformed/jetified-window-1.0.0-beta04/res
+com.example.mcricket.app-jetified-window-java-1.0.0-beta04-2 /Users/michl/.gradle/caches/transforms-3/99750bb863b6fe460a7b5da8686e778d/transformed/jetified-window-java-1.0.0-beta04/res
+com.example.mcricket.app-core-1.6.0-3 /Users/michl/.gradle/caches/transforms-3/d08c73bfb05384f2e52578171dbd141e/transformed/core-1.6.0/res
+com.example.mcricket.app-debug-4 /Users/michl/development/flutter-project/mcricket/android/app/src/debug/res
+com.example.mcricket.app-main-5 /Users/michl/development/flutter-project/mcricket/android/app/src/main/res
+com.example.mcricket.app-pngs-6 /Users/michl/development/flutter-project/mcricket/build/app/generated/res/pngs/debug
+com.example.mcricket.app-resValues-7 /Users/michl/development/flutter-project/mcricket/build/app/generated/res/resValues/debug
+com.example.mcricket.app-rs-8 /Users/michl/development/flutter-project/mcricket/build/app/generated/res/rs/debug
+com.example.mcricket.app-mergeDebugResources-9 /Users/michl/development/flutter-project/mcricket/build/app/intermediates/incremental/debug/mergeDebugResources/merged.dir
+com.example.mcricket.app-mergeDebugResources-10 /Users/michl/development/flutter-project/mcricket/build/app/intermediates/incremental/debug/mergeDebugResources/stripped.dir
+com.example.mcricket.app-merged_res-11 /Users/michl/development/flutter-project/mcricket/build/app/intermediates/merged_res/debug
+com.example.mcricket.app-packaged_res-12 /Users/michl/development/flutter-project/mcricket/build/flutter_native_splash/intermediates/packaged_res/debug
+com.example.mcricket.app-packaged_res-13 /Users/michl/development/flutter-project/mcricket/build/path_provider_android/intermediates/packaged_res/debug
