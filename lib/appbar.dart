@@ -19,7 +19,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
           icon: Image.asset(
               'assets/images/logo.png'), // Remplacez le chemin par le chemin réel de votre image
           onPressed: () {
-            Navigator.pushNamed(context, '/homepage');
+            Navigator.pushNamed(context, '/');
           },
         ),
         centerTitle: true,

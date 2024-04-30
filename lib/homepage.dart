@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mcricket/appbar.dart';
-import 'package:mcricket/splash.dart';
 
 class MyHomepage extends StatefulWidget {
   const MyHomepage({super.key});
