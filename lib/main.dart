@@ -17,13 +17,13 @@ class MyApp extends StatelessWidget {
       secondary: Color(0xFFF27457), // Couleur secondaire
       surface: Color(0xFFECE8E8), // Couleur de surface
       background: Color(0xFFECE8E8), // Couleur d'arrière-plan
-      error: Color(0xFFF44336), // Couleur d'erreur
+      error: Color(0xFFF44336),
       onPrimary:
           Color(0xFFECE8E8), // Couleur de texte sur la couleur principale
       onSecondary:
           Color(0xFFECE8E8), // Couleur de texte sur la couleur secondaire
       onSurface:
-          Color(0xFF000000), // Couleur de texte sur la couleur de surface
+          Color(0xFFC2C1C1), // Couleur de texte sur la couleur de surface
       onBackground:
           Color(0xFF000000), // Couleur de texte sur la couleur d'arrière-plan
       onError: Color(0xFFFFFFFF), // Couleur de texte sur la couleur d'erreur
@@ -37,7 +37,9 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const MyHomepage(),
         '/homepage': (context) => const MyHomepage(),
-        '/splash': (context) => const SplashScreen(),
+        '/splash': (context) => const SplashScreen(
+              teams: [],
+            ),
         '/settings': (context) => const Settings(),
       },
     );

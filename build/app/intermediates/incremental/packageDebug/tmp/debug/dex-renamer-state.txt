@@ -1,4 +1,4 @@
-#Tue Apr 30 21:04:26 CEST 2024
+#Wed May 01 16:15:06 CEST 2024
 base.0=/Users/michl/development/flutter-project/mcricket/build/app/intermediates/dex/debug/mergeDexDebug/classes.dex
 path.0=classes.dex
 renamed.0=classes.dex

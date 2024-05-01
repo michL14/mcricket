@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mcricket/appbar.dart';
+import 'package:mcricket/splash.dart';
 
 class Settings extends StatelessWidget {
   const Settings({super.key});
@@ -16,7 +17,7 @@ class Settings extends StatelessWidget {
 }
 
 class PlayersForm extends StatefulWidget {
-  const PlayersForm({Key? key}) : super(key: key);
+  const PlayersForm({super.key});
 
   @override
   PlayersFormState createState() => PlayersFormState();
@@ -25,11 +26,11 @@ class PlayersForm extends StatefulWidget {
 class PlayersFormState extends State<PlayersForm> {
   final _nbPlayersController = TextEditingController();
   final _nbTeamsController = TextEditingController();
-  List<TextEditingController> _namePlayersController = [];
+  final List<TextEditingController> _namePlayersController = [];
   int _currentStep = 0;
   String errorText = '';
   int nb_teams = 0;
-  List<List<int>> _teams = [];
+  List<List<String>> _teams = [];
   bool _isYesSelected =
       false; // Déclaration de _isYesSelected avec une valeur initiale de false
   bool _isNoSelected = false;
@@ -58,7 +59,7 @@ class PlayersFormState extends State<PlayersForm> {
                         if (int.tryParse(_nbPlayersController.text) == null) {
                           errorText = 'Please enter a valid number';
                         } else {
-                          if (int.parse(_nbPlayersController.text) < 1 &&
+                          if (int.parse(_nbPlayersController.text) < 1 ||
                               int.parse(_nbPlayersController.text) > 10) {
                             errorText =
                                 'Please enter a number between 1 and 10';
@@ -113,11 +114,11 @@ class PlayersFormState extends State<PlayersForm> {
                       }
                       break;
                     case 3:
-                      for (var controller in _namePlayersController) {
-                        if (controller.text.isEmpty) {
-                          errorText = 'Please enter a name for every players';
-                        }
-                      }
+                      // for (var controller in _namePlayersController) {
+                      //   if (controller.text.isEmpty) {
+                      //     errorText = 'Please enter a name for every players';
+                      //   }
+                      // }
                       break;
                   }
                   if (errorText.isNotEmpty) {
@@ -135,14 +136,38 @@ class PlayersFormState extends State<PlayersForm> {
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
-                            title: const Text('Lancement de la partie..'),
-                            content: const Text('Yes'),
-                            actions: [
+                            title: const Text('M\'CRICKET - 301'),
+                            content: const Text('Are you ready ??'),
+                            actions: <Widget>[
                               TextButton(
                                 onPressed: () {
-                                  Navigator.pop(context);
+                                  Navigator.of(context).pop(false);
                                 },
-                                child: const Text('OK'),
+                                child: Text(
+                                  "No, wait 😨",
+                                  style: TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.onSurface,
+                                  ),
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          SplashScreen(teams: _teams),
+                                    ),
+                                  );
+                                },
+                                child: Text(
+                                  "Yes, let\'s go ! 🔥",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Theme.of(context).colorScheme.error,
+                                  ),
+                                ),
                               )
                             ],
                           );
@@ -150,7 +175,7 @@ class PlayersFormState extends State<PlayersForm> {
                       );
                     } else {
                       if (_currentStep == 2) {
-                        makeTeams(int.parse(_nbPlayersController.text),
+                        prepareToMakeTeams(int.parse(_nbPlayersController.text),
                             int.parse(_nbTeamsController.text));
                       }
                       setState(() {
@@ -174,17 +199,41 @@ class PlayersFormState extends State<PlayersForm> {
     );
   }
 
-  void makeTeams(int nbPlayers, int nbTeams) {
+  void prepareToMakeTeams(int nbPlayers, int nbTeams) {
     _teams.clear();
-    _teams = List.generate(nbTeams, (_) => <int>[]);
+    _teams = List.generate(nbTeams, (_) => <String>[]);
     while (nbPlayers > 0) {
       for (int team = 0; team < nbTeams; team++) {
         if (nbPlayers != 0) {
-          _teams[team].add(1);
+          _teams[team].add('1');
         }
         nbPlayers--;
       }
     }
+  }
+
+  List<Widget> _buildTeamSizeButtons(int numberOfPlayers) {
+    List<Widget> buttons = [];
+    int endRange = numberOfPlayers.isEven
+        ? numberOfPlayers ~/ 2
+        : (numberOfPlayers ~/ 2) + 1;
+    for (int i = 2; i <= endRange; i++) {
+      buttons.add(_buildTeamSizeButton(i));
+    }
+    return buttons;
+  }
+
+  Widget _buildTeamSizeButton(int teamSize) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+          horizontal: 8.0), // Ajouter du padding horizontal
+      child: ElevatedButton(
+        onPressed: () {
+          // Mettez en œuvre la logique de sélection de la taille de l'équipe ici
+        },
+        child: Text('$teamSize'),
+      ),
+    );
   }
 
   List<Step> getSteps() {
@@ -281,17 +330,18 @@ class PlayersFormState extends State<PlayersForm> {
         title: const Text(''),
         content: Column(
           children: [
-            TextFormField(
-              controller: _nbTeamsController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: 'Number of Teams',
-                border: OutlineInputBorder(),
+            const Text('Nombre de joueurs par équipe :'),
+            const SizedBox(
+                height:
+                    20), // Espacement entre le champ de texte et les boutons
+            if (_nbPlayersController.text.isNotEmpty)
+              Row(
+                mainAxisAlignment: MainAxisAlignment
+                    .center, // Centrer les boutons horizontalement
+                mainAxisSize: MainAxisSize.min,
+                children:
+                    _buildTeamSizeButtons(int.parse(_nbPlayersController.text)),
               ),
-              onChanged: (value) {
-                setState(() {});
-              },
-            ),
           ],
         ),
       ),
@@ -300,26 +350,23 @@ class PlayersFormState extends State<PlayersForm> {
         title: const Text(''),
         content: Column(
           children: List.generate(
-            _teams.length, // Utilisez le nombre d'équipes
+            _teams.length,
             (teamIndex) {
               return Column(
                 children: [
-                  Text(
-                      'Team ${teamIndex + 1}:'), // Affichez le numéro de l'équipe
+                  Text('Team ${teamIndex + 1}:'),
                   ...List.generate(
-                    _teams[teamIndex]
-                        .length, // Utilisez le nombre de joueurs dans l'équipe
+                    _teams[teamIndex].length,
                     (playerIndex) {
-                      final TextEditingController controller =
-                          TextEditingController();
-                      _namePlayersController.add(controller);
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: TextFormField(
-                          controller: controller,
+                          onChanged: (value) {
+                            _teams[teamIndex][playerIndex] = value;
+                          },
                           decoration: InputDecoration(
                             labelText: 'Player ${playerIndex + 1} Name',
-                            border: OutlineInputBorder(),
+                            border: const OutlineInputBorder(),
                           ),
                         ),
                       );

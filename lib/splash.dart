@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mcricket/game01.dart';
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({super.key});
+  final List<List<String>> teams;
+  const SplashScreen({super.key, required this.teams});
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -22,8 +24,12 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   route() {
-    //Navigator.pushReplacementNamed(context, '/home');
-    Navigator.pushNamed(context, '/homepage');
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Game01(teamsList: widget.teams),
+      ),
+    );
   }
 
   @override
