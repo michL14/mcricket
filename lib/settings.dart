@@ -25,16 +25,15 @@ class PlayersForm extends StatefulWidget {
 
 class PlayersFormState extends State<PlayersForm> {
   final _nbPlayersController = TextEditingController();
-  final _nbTeamsController = TextEditingController();
-  final List<TextEditingController> _namePlayersController = [];
   int _currentStep = 0;
   String errorText = '';
-  int nb_teams = 0;
+  int nbTeams = 0;
   List<List<String>> _teams = [];
   bool _isYesSelected =
       false; // Déclaration de _isYesSelected avec une valeur initiale de false
   bool _isNoSelected = false;
   List<TextEditingController> controller = [];
+  int _selectedButtonIndex = -1;
 
   @override
   Widget build(BuildContext context) {
@@ -72,53 +71,28 @@ class PlayersFormState extends State<PlayersForm> {
                         errorText = 'You need to make a choice';
                       }
                       if (_isYesSelected &&
-                          (_nbPlayersController.text == '1' ||
-                              _nbPlayersController.text == '2')) {
+                          (int.parse(_nbPlayersController.text) < 4)) {
                         errorText = 'You are not enough 😏';
                       }
                       if (_isNoSelected) {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: const Text('Lancement de la partie..'),
-                              content: const Text('Yes'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Text('OK'),
-                                )
-                              ],
-                            );
-                          },
-                        );
+                        nbTeams = int.parse(_nbPlayersController.text);
+                        _currentStep++;
                       }
                       break;
                     case 2:
-                      if (_nbTeamsController.text.isEmpty) {
+                      if (_selectedButtonIndex == -1) {
                         errorText =
-                            'Please enter a number of players per teams';
-                      } else {
-                        if (int.tryParse(_nbTeamsController.text) == null) {
-                          errorText = 'Please enter a valid number';
-                        } else {
-                          if (int.parse(_nbTeamsController.text) < 1 &&
-                              int.parse(_nbTeamsController.text) > 10) {
-                            errorText =
-                                'Please enter a number between 1 and 10';
-                          }
-                          nb_teams = int.parse(_nbTeamsController.text);
-                        }
+                            'Please choose a number of players per teams';
                       }
                       break;
                     case 3:
-                      // for (var controller in _namePlayersController) {
-                      //   if (controller.text.isEmpty) {
-                      //     errorText = 'Please enter a name for every players';
-                      //   }
-                      // }
+                      for (var listeTeams in _teams) {
+                        for (var team in listeTeams) {
+                          if (team == '1' || team.isEmpty) {
+                            errorText = 'Please enter a name for every players';
+                          }
+                        }
+                      }
                       break;
                   }
                   if (errorText.isNotEmpty) {
@@ -175,8 +149,8 @@ class PlayersFormState extends State<PlayersForm> {
                       );
                     } else {
                       if (_currentStep == 2) {
-                        prepareToMakeTeams(int.parse(_nbPlayersController.text),
-                            int.parse(_nbTeamsController.text));
+                        prepareToMakeTeams(
+                            int.parse(_nbPlayersController.text), nbTeams);
                       }
                       setState(() {
                         _currentStep++;
@@ -199,26 +173,34 @@ class PlayersFormState extends State<PlayersForm> {
     );
   }
 
-  void prepareToMakeTeams(int nbPlayers, int nbTeams) {
+  void prepareToMakeTeams(int nbPlayers, int nbPlayerPerTeam) {
     _teams.clear();
-    _teams = List.generate(nbTeams, (_) => <String>[]);
+    int nbTeamsTot;
+    nbTeamsTot = (nbPlayers ~/ nbPlayerPerTeam);
+    _teams = List.generate(nbTeamsTot, (_) => <String>[]);
     while (nbPlayers > 0) {
-      for (int team = 0; team < nbTeams; team++) {
+      for (int team = 0; team < nbTeamsTot; team++) {
         if (nbPlayers != 0) {
           _teams[team].add('1');
+          nbPlayers--;
         }
-        nbPlayers--;
       }
     }
   }
 
   List<Widget> _buildTeamSizeButtons(int numberOfPlayers) {
     List<Widget> buttons = [];
-    int endRange = numberOfPlayers.isEven
-        ? numberOfPlayers ~/ 2
-        : (numberOfPlayers ~/ 2) + 1;
+
+    int endRange =
+        numberOfPlayers.isEven ? numberOfPlayers ~/ 2 : (numberOfPlayers ~/ 2);
     for (int i = 2; i <= endRange; i++) {
-      buttons.add(_buildTeamSizeButton(i));
+      if (numberOfPlayers.isEven) {
+        if (i == 2 || i == numberOfPlayers / 2) {
+          buttons.add(_buildTeamSizeButton(i));
+        }
+      } else {
+        buttons.add(_buildTeamSizeButton(i));
+      }
     }
     return buttons;
   }
@@ -229,9 +211,42 @@ class PlayersFormState extends State<PlayersForm> {
           horizontal: 8.0), // Ajouter du padding horizontal
       child: ElevatedButton(
         onPressed: () {
-          // Mettez en œuvre la logique de sélection de la taille de l'équipe ici
+          setState(() {
+            if (_selectedButtonIndex == teamSize) {
+              _selectedButtonIndex = -1;
+              nbTeams = 0;
+            } else {
+              // Sinon, sélectionnez-le et mettez à jour nbTeams
+              _selectedButtonIndex = teamSize;
+              nbTeams = teamSize;
+            }
+          });
+          nbTeams = teamSize;
         },
-        child: Text('$teamSize'),
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.resolveWith<Color>(
+            (states) {
+              // Définir la couleur du fond en fonction de l'état de sélection
+              return _selectedButtonIndex == teamSize
+                  ? Theme.of(context).colorScheme.primary
+                  : Theme.of(context)
+                      .colorScheme
+                      .background; // Couleur par défaut
+            },
+          ),
+        ),
+        child: Text(
+          '$teamSize',
+          style: TextStyle(
+              color: _selectedButtonIndex == teamSize
+                  ? Theme.of(context)
+                      .colorScheme
+                      .onPrimary // Couleur du texte lorsque sélectionné
+                  : Theme.of(context)
+                      .colorScheme
+                      .onBackground // Couleur du texte par défaut
+              ),
+        ),
       ),
     );
   }
@@ -354,7 +369,7 @@ class PlayersFormState extends State<PlayersForm> {
             (teamIndex) {
               return Column(
                 children: [
-                  Text('Team ${teamIndex + 1}:'),
+                  if (_isYesSelected) Text('Team ${teamIndex + 1}:'),
                   ...List.generate(
                     _teams[teamIndex].length,
                     (playerIndex) {

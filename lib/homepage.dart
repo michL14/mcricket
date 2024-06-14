@@ -12,7 +12,6 @@ class MyHomepage extends StatefulWidget {
 class _MyHomepageState extends State<MyHomepage> {
   @override
   Widget build(BuildContext context) {
-    var theme = Theme.of(context);
     return const Scaffold(
       appBar: MyAppBar(),
       body: GameList(),
